@@ -14,6 +14,8 @@ paths:
     post:
       summary: Request a job for a persona.
       description: Creates a new job with a salary for a specific persona.
+      tags:
+        - Jobs
       requestBody:
         description: Details of the persona.
         required: true
@@ -39,6 +41,8 @@ paths:
     get:
       summary: Get the labour broker's bank transaction history.
       description: Returns a paginated subset of the labour broker's bank transaction history.
+      tags:
+        - Jobs
       parameters:
         - name: startMonth
           in: query
@@ -72,6 +76,8 @@ paths:
     put:
       summary: Increase the salaries of a number of employees.
       description: Increase the salary of a set of employees by a corresponding percentage.
+      tags:
+        - Salary
       requestBody:
         description: Details of the persona.
         required: true
@@ -95,6 +101,8 @@ paths:
     get:
       summary: Get increases per term.
       description: Returns the average of salary increases per term.
+      tags:
+        - Salary
       responses:
         '200':
           description: The salary increases per term.
@@ -115,6 +123,8 @@ paths:
     get:
       summary: Get distribution of salaries.
       description: Returns the distribution of employees' salaries with a specified bin size and range.
+      tags:
+        - Salary
       parameters:
         - name: binSize
           in: query
@@ -156,6 +166,8 @@ paths:
     get:
       summary: Get the total average of all employee salaries.
       description: Returns the total average of all employee salaries.
+      tags:
+        - Salary
       responses:
         '200':
           description: The total average of all employee salaries.
@@ -174,6 +186,8 @@ paths:
     put:
       summary: Set minimum wage.
       description: Alter the minimum amount employees can be paid.
+      tags:
+        - Salary
       requestBody:
         description: Details of the persona.
         required: true
@@ -199,6 +213,8 @@ paths:
     get:
       summary: Get employee salary
       description: Returns the salary of the specified persona, if it exists.
+      tags:
+        - Salary
       parameters:
         - name: personaId
           in: path
@@ -226,6 +242,8 @@ paths:
     post:
       summary: Send an transaction notification.
       description: Creates a new bank transaction log entry.
+      tags:
+        - Account
       requestBody:
         description: Details of the persona.
         required: true
@@ -249,6 +267,8 @@ paths:
     get:
       summary: Get information about the labour broker's financial standing.
       description: Returns the labour broker's bank balance and the amount of tax paid.
+      tags:
+        - Account
       responses:
         '200':
           description: Some information about the labour broker's financial standing.
@@ -267,6 +287,8 @@ paths:
     get:
       summary: Get the labour broker's bank transaction history.
       description: Returns a paginated subset of the labour broker's bank transaction history.
+      tags:
+        - Account
       parameters:
         - name: page
           in: query
@@ -296,18 +318,19 @@ paths:
         '500':
           description: Internal server error.
 
-/reset:
+  /reset:
     delete:
-      summary: Reset the simulation.
-      description: Remove all data and reset the simulation to the start.
+      summary: Reset the simulation to its base state.
+      description: Removes all data related to the previous simulation and starts a new one with all values and tables set to default.
+      tags:
+        - Simulation
       responses:
-        '200':
-          description: Simulation successfully reset to base state.
+        '204':
+          description: Simulation successfully reset.
         '401':
           description: Not authorised to access this endpoint.
         '500':
           description: Internal server error.
-
 
 components:
   schemas:

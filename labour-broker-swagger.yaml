@@ -4,10 +4,8 @@ info:
   description: API for simulating the concept of people procuring jobs. This includes salaries being paid.
   version: 1.0.0
 servers:
-  - url: https://api.labourbroker.com/v1
+  - url: https://api.labour.projects.bbdgrad.com
     description: Production server
-  - url: https://staging-api.labourbroker.com/v1
-    description: Staging server
 paths:
 
   /job/request:
@@ -39,26 +37,26 @@ paths:
   
   /job/hires:
     get:
-      summary: Get the labour broker's bank transaction history.
-      description: Returns a paginated subset of the labour broker's bank transaction history.
+      summary: Hires per month for a term.
+      description: Returns a set of months with the number of new hires during that each month.
       tags:
         - Jobs
       parameters:
         - name: startMonth
           in: query
-          description: Page to display; for pagination controls
+          description: The first month in the set, inclusive.
           required: true
           schema:
             type: string
         - name: endMonth
           in: query
-          description: The size of each page; for pagination controls
+          description: The last month in the set, inclusive.
           required: true
           schema:
             type: string
       responses:
         '200':
-          description: The labour broker's bank transaction history.
+          description: The new hires per month.
           content:
             application/json:
               schema:
@@ -68,7 +66,7 @@ paths:
         '401':
           description: Not authorised to access this endpoint.
         '404':
-          description: No financial data available.
+          description: No hires found in the specified range.
         '500':
           description: Internal server error.
 
@@ -331,6 +329,51 @@ paths:
           description: Not authorised to access this endpoint.
         '500':
           description: Internal server error.
+  /auth:
+    get:
+      summary: Cognito authentication.
+      description: Returns the tokens needed for authorisation.
+      tags:
+        - Authorization
+      parameters:
+        - name: code
+          in: query
+          description: Auth code
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Authentication successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Auth'
+        '400':
+          description: Invalid request parameters.
+        '401':
+          description: Invalid or expired token.
+        '500':
+          description: Internal server error.
+
+  /auth/url:
+    get:
+      summary: Cognito url.
+      description: Returns the Cognito URL needed for auth.
+      tags:
+        - Authorization
+      responses:
+        '200':
+          description: URL for auth.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthUrl'
+        '401':
+          description: Not authorised to access this endpoint.
+        '500':
+          description: Internal server error.
+
 
 components:
   schemas:
@@ -497,3 +540,23 @@ components:
         taxPaid:
           type: number
           description: Total tax paid by the labour broker.
+    
+    Auth:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: Auth access token.
+        idToken:
+          type: string
+          description: Auth identity token.
+        expiresIn:
+          type: integer
+          description: The time before the token will expire.
+          
+    AuthUrl:
+      type: object
+      properties:
+        url:
+          type: string
+          description: Auth URL.

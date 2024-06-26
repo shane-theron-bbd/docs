@@ -1,0 +1,476 @@
+openapi: 3.0.1
+info:
+  title: Labour Broker API
+  description: API for simulating the concept of people procuring jobs. This includes salaries being paid.
+  version: 1.0.0
+servers:
+  - url: https://api.labourbroker.com/v1
+    description: Production server
+  - url: https://staging-api.labourbroker.com/v1
+    description: Staging server
+paths:
+
+  /job/request:
+    post:
+      summary: Request a job for a persona.
+      description: Creates a new job with a salary for a specific persona.
+      requestBody:
+        description: Details of the persona.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateJobRequest'
+      responses:
+        '201':
+          description: Job successfully assigned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Job'
+        '400':
+          description: Invalid request parameters.
+        '401':
+          description: Not authorised to access this endpoint.
+        '500':
+          description: Internal server error.
+  
+  /job/hires:
+    get:
+      summary: Get the labour broker's bank transaction history.
+      description: Returns a paginated subset of the labour broker's bank transaction history.
+      parameters:
+        - name: startMonth
+          in: query
+          description: Page to display; for pagination controls
+          required: true
+          schema:
+            type: string
+        - name: endMonth
+          in: query
+          description: The size of each page; for pagination controls
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The labour broker's bank transaction history.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hires'
+        '400':
+          description: Invalid request parameters.
+        '401':
+          description: Not authorised to access this endpoint.
+        '404':
+          description: No financial data available.
+        '500':
+          description: Internal server error.
+
+  /salary/increases:
+    put:
+      summary: Increase the salaries of a number of employees.
+      description: Increase the salary of a set of employees by a corresponding percentage.
+      requestBody:
+        description: Details of the persona.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SalaryIncreaseRequest'
+      responses:
+        '200':
+          description: Salaries successfully increased.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeSet'
+        '400':
+          description: Invalid request parameters.
+        '401':
+          description: Not authorised to access this endpoint.
+        '500':
+          description: Internal server error.
+    get:
+      summary: Get increases per term.
+      description: Returns the average of salary increases per term.
+      responses:
+        '200':
+          description: The salary increases per term.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SalaryIncreases'
+        '404':
+          description: No increases have occurred.
+        '401':
+          description: Not authorised to access this endpoint.
+        '500':
+          description: Internal server error.
+
+  /salary/distribution:
+    get:
+      summary: Get distribution of salaries.
+      description: Returns the distribution of employees' salaries with a specified bin size and range.
+      parameters:
+        - name: binSize
+          in: query
+          description: Size of bins for the salary distribution
+          required: true
+          schema:
+            type: number
+        - name: minSalary
+          in: query
+          description: Minimum salary to get
+          required: true
+          schema:
+            type: number
+        - name: maxSalary
+          in: query
+          description: Maximum salary to get
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Distribution of employees' salaries.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SalaryDistribution'
+        '400':
+          description: Invalid request parameters.
+        '401':
+          description: Not authorised to access this endpoint.
+        '404':
+          description: There are no salaries for the range specified.
+        '500':
+          description: Internal server error.
+
+  /salary/average:
+    get:
+      summary: Get the total average of all employee salaries.
+      description: Returns the total average of all employee salaries.
+      responses:
+        '200':
+          description: The total average of all employee salaries.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SalaryAverage'
+        '401':
+          description: Not authorised to access this endpoint.
+        '404':
+          description: No average to display.
+        '500':
+          description: Internal server error.
+  
+  /salary/minimum:
+    put:
+      summary: Set minimum wage.
+      description: Alter the minimum amount employees can be paid.
+      requestBody:
+        description: Details of the persona.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlterMinimumWageRequest'
+      responses:
+        '200':
+          description: Minimum wage successfully altered.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MinimumWage'
+        '400':
+          description: Invalid request parameters.
+        '401':
+          description: Not authorised to access this endpoint.
+        '500':
+          description: Internal server error.
+
+  /salary/{personaId}:
+    get:
+      summary: Get employee salary
+      description: Returns the salary of the specified persona, if it exists.
+      parameters:
+        - name: personaId
+          in: path
+          required: true
+          description: The ID of the persona to retrieve the salary of.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Persona's salary.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Job'
+        '401':
+          description: Not authorised to access this endpoint.
+        '404':
+          description: Employee not found.
+        '500':
+          description: Internal server error.
+
+  /account:
+    post:
+      summary: Send an transaction notification.
+      description: Creates a new bank transaction log entry.
+      requestBody:
+        description: Details of the persona.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTransactionRequest'
+      responses:
+        '201':
+          description: Job successfully assigned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        '400':
+          description: Invalid request parameters.
+        '401':
+          description: Not authorised to access this endpoint.
+        '500':
+          description: Internal server error.
+    get:
+      summary: Get information about the labour broker's financial standing.
+      description: Returns the labour broker's bank balance and the amount of tax paid.
+      responses:
+        '200':
+          description: Some information about the labour broker's financial standing.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FinancialInfo'
+        '401':
+          description: Not authorised to access this endpoint.
+        '404':
+          description: No financial data available.
+        '500':
+          description: Internal server error.
+
+  /account/transactions:
+    get:
+      summary: Get the labour broker's bank transaction history.
+      description: Returns a paginated subset of the labour broker's bank transaction history.
+      parameters:
+        - name: page
+          in: query
+          description: Page to display; for pagination controls
+          required: true
+          schema:
+            type: integer
+        - name: pageSize
+          in: query
+          description: The size of each page; for pagination controls
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: The labour broker's bank transaction history.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionHistory'
+        '400':
+          description: Invalid request parameters.
+        '401':
+          description: Not authorised to access this endpoint.
+        '404':
+          description: No financial data available.
+        '500':
+          description: Internal server error.
+
+/reset:
+    delete:
+      summary: Reset the simulation.
+      description: Remove all data and reset the simulation to the start.
+      responses:
+        '200':
+          description: Simulation successfully reset to base state.
+        '401':
+          description: Not authorised to access this endpoint.
+        '500':
+          description: Internal server error.
+
+
+components:
+  schemas:
+    CreateJobRequest:
+      type: object
+      required:
+        - personaId
+      properties:
+        personaId:
+          type: string
+          description: The unique identifier for the persona.
+    
+    SalaryIncreaseRequest:
+      type: array
+      items:
+        type: object
+        required:
+          - personaId
+          - increasePercentage
+        properties:
+          personaId:
+            type: string
+            description: The unique identifier for the persona.
+          increasePercentage:
+            type: integer
+            description: The percentage to increase the persona's salary with.
+
+    AlterMinimumWageRequest:
+      type: object
+      required:
+        - minimumWage
+      properties:
+        minimumWage:
+          type: number
+          description: The new minimum wage value.
+
+    CreateTransactionRequest:
+      type: object
+      required:
+        - amount
+        - datetime
+        - source
+        - reason
+      properties:
+        amount:
+          type: number
+          description: Amount deducted or paid into account.
+        datetime:
+          type: string
+          description: Datetime of transaction.
+        source:
+          type: string
+          description: The other party involved in the transaction.
+        reason:
+          type: string
+          description: What the payment is for.
+
+    Persona:
+      type: object
+      properties:
+        personaId:
+          type: string
+          description: The unique identifier for the persona.
+
+    Job:
+      type: object
+      properties:
+        salary:
+          type: number
+          description: The assigned salary for the job.
+
+    Hires:
+      type: array
+      items:
+        type: object
+        properties:
+          month:
+            type: string
+            description: The month for which to count the number of new hires.
+          hiredCount:
+            type: integer
+            description: The amount of people hired in a month.
+
+    Employee:
+      type: object
+      properties:
+        personaId:
+          type: string
+          description: The unique identifier for the persona.
+        salary:
+          type: number
+          description: The assigned salary for the employee's job.
+    
+    EmployeeSet:
+      type: array
+      items:
+        $ref: '#/components/schemas/Employee'
+
+    MinimumWage:
+      type: object
+      properties:
+        minimumWage:
+          type: number
+          description: The new minimum wage value.
+
+    SalaryIncreases:
+      type: array
+      items:
+        type: object
+        properties:
+          date:
+            type: string
+            description: The date of the salary increase.
+          increasePercentage:
+            type: integer
+            description: The average slaary increase percentage.
+
+    SalaryDistribution:
+      type: array
+      items:
+        type: object
+        properties:
+          range:
+            type: string
+            description: The salary range.
+          count:
+            type: integer
+            description: The amount of employees with salaries in the range.
+    
+    SalaryAverage:
+      type: object
+      properties:
+        averageSalary:
+          type: number
+          description: The average of employee salaries.
+
+    Transaction:
+      type: object
+      properties:
+        amount:
+          type: number
+          description: Amount deducted or paid into account.
+        datetime:
+          type: string
+          description: Datetime of transaction.
+        source:
+          type: string
+          description: The other party involved in the transaction.
+        reason:
+          type: string
+          description: What the payment is for.
+
+    TransactionHistory:
+      type: array
+      items:
+        $ref: '#/components/schemas/Transaction'
+
+    FinancialInfo:
+      type: object
+      properties:
+        bankBalance:
+          type: number
+          description: Latest balance for the labour broker's bank account.
+        taxPaid:
+          type: number
+          description: Total tax paid by the labour broker.

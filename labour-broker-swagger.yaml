@@ -8,7 +8,7 @@ servers:
     description: Production server
 paths:
 
-  /job/request:
+  /job:
     post:
       summary: Request a job for a persona.
       description: Creates a new job with a salary for a specific persona.
@@ -34,6 +34,19 @@ paths:
           description: Not authorised to access this endpoint.
         '500':
           description: Internal server error.
+    delete:
+      summary: Remove a persona from their position.
+      description: Used when a persona dies and they need to be removed from employment.
+      tags:
+        - Jobs
+      responses:
+        '204':
+          description: Employment sucessfully terminated.
+        '401':
+          description: Not authorised to access this endpoint.
+        '500':
+          description: Internal server error.
+
   
   /job/hires:
     get:

@@ -34,11 +34,20 @@ paths:
           description: Not authorised to access this endpoint.
         '500':
           description: Internal server error.
+
+  /job/{personaId}:
     delete:
       summary: Remove a persona from their position.
       description: Used when a persona dies and they need to be removed from employment.
       tags:
         - Jobs
+      parameters:
+        - name: personaId
+          in: path
+          required: true
+          description: The ID of the persona to remove from their position.
+          schema:
+            type: string
       responses:
         '204':
           description: Employment sucessfully terminated.
@@ -329,7 +338,7 @@ paths:
         '500':
           description: Internal server error.
 
-  /reset:
+  /simulation/reset:
     delete:
       summary: Reset the simulation to its base state.
       description: Removes all data related to the previous simulation and starts a new one with all values and tables set to default.

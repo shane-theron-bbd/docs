@@ -34,7 +34,7 @@ paths:
           description: Not authorised to access this endpoint.
         '500':
           description: Internal server error.
-          
+
   /job/{personaId}:
     delete:
       summary: Remove a persona from their position.
@@ -165,8 +165,8 @@ paths:
           description: Not authorised to access this endpoint.
         '500':
           description: Internal server error.
-  
-  /reset:
+
+  /simulation/reset:
     delete:
       summary: Reset the simulation to its base state.
       description: Removes all data related to the previous simulation and starts a new one with all values and tables set to default.
@@ -280,3 +280,4 @@ components:
         reason:
           type: string
           description: What the payment is for.
+    

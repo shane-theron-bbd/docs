@@ -203,7 +203,7 @@ components:
             type: string
             description: The unique identifier for the persona.
           increasePercentage:
-            type: integer
+            type: number
             description: The percentage to increase the persona's salary with.
 
     AlterMinimumWageRequest:
@@ -212,9 +212,9 @@ components:
         - minimumWage
       properties:
         minimumWage:
-          type: number
+          type: integer
           description: The new minimum wage value.
-
+    
     CreateTransactionRequest:
       type: object
       required:
@@ -223,24 +223,37 @@ components:
         - source
         - reason
       properties:
-        amount:
-          type: number
-          description: Amount deducted or paid into account.
-        datetime:
+        type:
           type: string
-          description: Datetime of transaction.
-        source:
-          type: string
-          description: The other party involved in the transaction.
-        reason:
-          type: string
-          description: What the payment is for.
+          description: The type of transaction.
+        transaction:
+          type: object
+          description: The transaction content.
+          properties:
+            id:
+              type: string
+              description: The id passed from the commercial bank
+            amount:
+              type: integer
+              description: Amount deducted or paid into account.
+            debitAccountName:
+              type: string
+              description: The party receiving money.
+            creditAccountName:
+              type: string
+              description: The party paying money.
+            transactionRef:
+              type: string
+              description: What the payment is for.
+            errorMessage:
+              type: string
+              description: What the payment is for.
 
     Job:
       type: object
       properties:
         salary:
-          type: number
+          type: integer
           description: The assigned salary for the job.
 
     Employee:
@@ -250,7 +263,7 @@ components:
           type: string
           description: The unique identifier for the persona.
         salary:
-          type: number
+          type: integer
           description: The assigned salary for the employee's job.
     
     EmployeeSet:
@@ -262,22 +275,31 @@ components:
       type: object
       properties:
         minimumWage:
-          type: number
+          type: integer
           description: The new minimum wage value.
 
     Transaction:
       type: object
       properties:
+        id:
+          type: string
+          description: The id passed from the commercial bank
         amount:
-          type: number
+          type: integer
           description: Amount deducted or paid into account.
-        datetime:
+        debitAccountName:
           type: string
-          description: Datetime of transaction.
-        source:
+          description: The party receiving money.
+        creditAccountName:
           type: string
-          description: The other party involved in the transaction.
-        reason:
+          description: The party paying money.
+        transactionRef:
           type: string
           description: What the payment is for.
+        errorMessage:
+          type: string
+          description: What the payment is for.
+        transactionDate:
+          type: string
+          description: The in-game date of the transaction
     

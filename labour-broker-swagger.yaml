@@ -151,19 +151,19 @@ paths:
           description: Size of bins for the salary distribution
           required: true
           schema:
-            type: number
+            type: integer
         - name: minSalary
           in: query
           description: Minimum salary to get
           required: true
           schema:
-            type: number
+            type: integer
         - name: maxSalary
           in: query
           description: Maximum salary to get
           required: true
           schema:
-            type: number
+            type: integer
       responses:
         '200':
           description: Distribution of employees' salaries.
@@ -420,7 +420,7 @@ components:
             type: string
             description: The unique identifier for the persona.
           increasePercentage:
-            type: integer
+            type: number
             description: The percentage to increase the persona's salary with.
 
     AlterMinimumWageRequest:
@@ -429,7 +429,7 @@ components:
         - minimumWage
       properties:
         minimumWage:
-          type: number
+          type: integer
           description: The new minimum wage value.
 
     CreateTransactionRequest:
@@ -440,31 +440,37 @@ components:
         - source
         - reason
       properties:
-        amount:
-          type: number
-          description: Amount deducted or paid into account.
-        datetime:
+        type:
           type: string
-          description: Datetime of transaction.
-        source:
-          type: string
-          description: The other party involved in the transaction.
-        reason:
-          type: string
-          description: What the payment is for.
-
-    Persona:
-      type: object
-      properties:
-        personaId:
-          type: string
-          description: The unique identifier for the persona.
+          description: The type of transaction.
+        transaction:
+          type: object
+          description: The transaction content.
+          properties:
+            id:
+              type: string
+              description: The id passed from the commercial bank
+            amount:
+              type: integer
+              description: Amount deducted or paid into account.
+            debitAccountName:
+              type: string
+              description: The party receiving money.
+            creditAccountName:
+              type: string
+              description: The party paying money.
+            transactionRef:
+              type: string
+              description: What the payment is for.
+            errorMessage:
+              type: string
+              description: What the payment is for.
 
     Job:
       type: object
       properties:
         salary:
-          type: number
+          type: integer
           description: The assigned salary for the job.
 
     Hires:
@@ -486,7 +492,7 @@ components:
           type: string
           description: The unique identifier for the persona.
         salary:
-          type: number
+          type: integer
           description: The assigned salary for the employee's job.
     
     EmployeeSet:
@@ -498,7 +504,7 @@ components:
       type: object
       properties:
         minimumWage:
-          type: number
+          type: integer
           description: The new minimum wage value.
 
     SalaryIncreases:
@@ -510,7 +516,7 @@ components:
             type: string
             description: The date of the salary increase.
           increasePercentage:
-            type: integer
+            type: number
             description: The average slaary increase percentage.
 
     SalaryDistribution:
@@ -535,18 +541,27 @@ components:
     Transaction:
       type: object
       properties:
+        id:
+          type: string
+          description: The id passed from the commercial bank
         amount:
-          type: number
+          type: integer
           description: Amount deducted or paid into account.
-        datetime:
+        debitAccountName:
           type: string
-          description: Datetime of transaction.
-        source:
+          description: The party receiving money.
+        creditAccountName:
           type: string
-          description: The other party involved in the transaction.
-        reason:
+          description: The party paying money.
+        transactionRef:
           type: string
           description: What the payment is for.
+        errorMessage:
+          type: string
+          description: What the payment is for.
+        transactionDate:
+          type: string
+          description: The in-game date of the transaction
 
     TransactionHistory:
       type: array
@@ -557,10 +572,10 @@ components:
       type: object
       properties:
         bankBalance:
-          type: number
+          type: integer
           description: Latest balance for the labour broker's bank account.
         taxPaid:
-          type: number
+          type: integer
           description: Total tax paid by the labour broker.
     
     Auth:
